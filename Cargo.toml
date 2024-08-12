@@ -8,3 +8,4 @@ edition = "2021"
 newsapi = { path = "./newsapi" }
 
 colour = "2.1.0"
+dotenv = "0.15.0"
