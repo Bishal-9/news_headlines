@@ -2,11 +2,11 @@
 name = "news_cli"
 version = "0.1.0"
 edition = "2021"
+authors = ["Bishal Goon <goonbishal.bg@gmail.com>"]
+license = "MIT"
 
 [dependencies]
-
 newsapi = { path = "./newsapi" }
-
 crossterm = "0.28.1"
 dotenv = "0.15.0"
 termimad = "0.30.0"
