@@ -7,4 +7,4 @@ edition = "2021"
 serde = { features = ["derive"], version = "1.0.206" }
 serde_json = "1.0.124"
 thiserror = "1.0.63"
-ureq = "2.10.0"
+ureq = { features = ["json"], version = "2.10.0"}
