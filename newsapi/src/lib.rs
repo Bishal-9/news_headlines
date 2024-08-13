@@ -15,9 +15,6 @@ pub enum NewsApiError {
     #[error("Articles parsing failed")]
     ArticlesParseFailed(serde_json::Error),
 
-    #[error("URL parsing failed")]
-    UrlParsing(#[from] url::ParseError),
-
     #[error("Request failed: {0}")]
     BadRequest(&'static str)
 }
