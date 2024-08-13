@@ -1,4 +1,6 @@
 
+#[cfg(feature = "async")]
+use reqwest::{Client, Method};
 use serde::Deserialize;
 
 const BASE_URL: &str = "https://newsapi.org/v2";
@@ -16,7 +18,11 @@ pub enum NewsApiError {
     ArticlesParseFailed(serde_json::Error),
 
     #[error("Request failed: {0}")]
-    BadRequest(&'static str)
+    BadRequest(&'static str),
+
+    #[error("Async request failed")]
+    #[cfg(feature = "async")]
+    AsyncRequestFailed(#[from] reqwest::Error)
 }
 
 #[derive(Debug, Deserialize)]
@@ -127,6 +133,24 @@ impl NewsAPI {
         let request = ureq::get(&url)
             .set("X-Api-Key", self.api_key.as_str());
         let response: NewsApiResponse = request.call()?.into_json()?;
+
+        match response.status.as_str() {
+            "ok" => return Ok(response),
+            _ => return Err(map_response_err(response.code))
+        }
+    }
+    #[cfg(feature = "async")]
+    pub async fn non_blocking_fetch(&self) -> Result<NewsApiResponse, NewsApiError> {
+        let url = self.prepare_url()?;
+        println!("URL: {}", url);
+        let client = Client::new();
+        let request = client
+            .request(Method::GET, url)
+            .header("Authorization", &self.api_key)
+            .header("User-Agent", "NewsAPI")
+            .build()
+            .map_err(|e| NewsApiError::AsyncRequestFailed(e))?;
+        let response: NewsApiResponse = client.execute(request).await?.json().await.map_err(|e| NewsApiError::AsyncRequestFailed(e))?;
 
         match response.status.as_str() {
             "ok" => return Ok(response),

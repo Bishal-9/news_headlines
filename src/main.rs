@@ -15,7 +15,8 @@ fn render_articles(articles: &Vec<Article>) {
     }
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
 
     dotenv();
 
@@ -26,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .country(IN)
         .endpoint(Endpoint::TopHeadlines);
     
-    let top_headlines_response = news_api_instance.blocking_fetch()?;
+    let top_headlines_response = news_api_instance.non_blocking_fetch().await?;
 
     render_articles(&top_headlines_response.get_articles());
 

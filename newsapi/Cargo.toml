@@ -4,7 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+reqwest = { features = ["json"], optional = true, version = "0.12.5" }
 serde = { features = ["derive"], version = "1.0.206" }
 serde_json = "1.0.124"
 thiserror = "1.0.63"
 ureq = { features = ["json"], version = "2.10.0"}
+
+[features]
+async = ["reqwest"]
